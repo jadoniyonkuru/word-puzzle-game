@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Puzzle Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Word Puzzle Game</h1>
+            <div class="score-board">
+                <div class="score">Score: <span id="score">0</span></div>
+                <div class="level">Level: <span id="level">1</span></div>
+                <div class="timer">Time: <span id="timer">60</span>s</div>
+            </div>
+        </header>
+
+        <main>
+            <div class="game-area">
+                <div class="puzzle-container">
+                    <div id="puzzle-grid" class="puzzle-grid"></div>
+                </div>
+                
+                <div class="word-display">
+                    <h3>Find these words:</h3>
+                    <div id="word-list" class="word-list"></div>
+                </div>
+                
+                <div class="controls">
+                    <button id="new-game-btn" class="btn">New Game</button>
+                    <button id="hint-btn" class="btn">Hint</button>
+                    <button id="pause-btn" class="btn">Pause</button>
+                </div>
+            </div>
+            
+            <div class="game-info">
+                <div class="instructions">
+                    <h3>How to Play:</h3>
+                    <ul>
+                        <li>Find the hidden words in the grid</li>
+                        <li>Words can be horizontal, vertical, or diagonal</li>
+                        <li>Click and drag to select words</li>
+                        <li>Complete all words before time runs out!</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+        
+        <div id="game-over-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Game Over!</h2>
+                <p>Final Score: <span id="final-score">0</span></p>
+                <p>Words Found: <span id="words-found">0</span>/<span id="total-words">0</span></p>
+                <button id="play-again-btn" class="btn">Play Again</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
