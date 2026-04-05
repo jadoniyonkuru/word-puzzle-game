@@ -106,10 +106,30 @@ main {
     animation: foundPulse 0.5s ease;
 }
 
+.grid-cell.hint-highlight {
+    background: #ff6b6b;
+    border-color: #fa5252;
+    color: white;
+    animation: hintPulse 2s ease-in-out;
+    box-shadow: 0 0 15px rgba(255, 107, 107, 0.6);
+    transform: scale(1.1);
+}
+
 @keyframes foundPulse {
     0% { transform: scale(1); }
     50% { transform: scale(1.1); }
     100% { transform: scale(1); }
+}
+
+@keyframes hintPulse {
+    0%, 100% { 
+        background: #ff6b6b;
+        box-shadow: 0 0 15px rgba(255, 107, 107, 0.6);
+    }
+    50% { 
+        background: #ffa94d;
+        box-shadow: 0 0 25px rgba(255, 169, 77, 0.8);
+    }
 }
 
 .word-display {
@@ -170,6 +190,18 @@ main {
 
 .btn:active {
     transform: translateY(0);
+}
+
+.btn:disabled {
+    background: #868e96;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn:disabled:hover {
+    transform: none;
+    box-shadow: none;
 }
 
 .game-info {

@@ -11,6 +11,9 @@ class WordPuzzleGame {
         this.isSelecting = false;
         this.selectedCells = [];
         this.timerInterval = null;
+        this.hintsUsed = 0;
+        this.maxHints = 3;
+        this.wordPositions = new Map();
         
         this.wordLists = {
             1: ['CAT', 'DOG', 'BIRD', 'FISH', 'BEAR'],
@@ -52,9 +55,12 @@ class WordPuzzleGame {
         this.level = 1;
         this.timeLeft = 60;
         this.foundWords.clear();
+        this.hintsUsed = 0;
+        this.wordPositions.clear();
         this.isPaused = false;
         
         this.updateDisplay();
+        this.updateHintDisplay();
         this.generatePuzzle();
         this.startTimer();
         
@@ -103,6 +109,14 @@ class WordPuzzleGame {
             const startCol = Math.floor(Math.random() * this.gridSize);
             
             if (this.canPlaceWord(word, startRow, startCol, direction)) {
+                // Store word position for hint system
+                this.wordPositions.set(word, {
+                    startRow,
+                    startCol,
+                    direction,
+                    length: word.length
+                });
+                
                 for (let i = 0; i < word.length; i++) {
                     const row = startRow + direction[0] * i;
                     const col = startCol + direction[1] * i;
@@ -276,20 +290,41 @@ class WordPuzzleGame {
     }
     
     showHint() {
-        if (this.isPaused) return;
+        if (this.isPaused || this.hintsUsed >= this.maxHints) return;
         
         const remainingWords = this.words.filter(word => !this.foundWords.has(word));
         if (remainingWords.length === 0) return;
         
         const hintWord = remainingWords[Math.floor(Math.random() * remainingWords.length)];
-        const wordElement = document.querySelector(`[data-word="${hintWord}"]`);
+        const wordPosition = this.wordPositions.get(hintWord);
         
-        if (wordElement) {
-            wordElement.style.animation = 'pulse 1s ease-in-out 3';
-            setTimeout(() => {
-                wordElement.style.animation = '';
-            }, 3000);
+        if (wordPosition) {
+            // Highlight the starting letter cell
+            const startCell = document.querySelector(
+                `.grid-cell[data-row="${wordPosition.startRow}"][data-col="${wordPosition.startCol}"]`
+            );
+            
+            if (startCell) {
+                startCell.classList.add('hint-highlight');
+                
+                // Remove highlight after 3 seconds
+                setTimeout(() => {
+                    startCell.classList.remove('hint-highlight');
+                }, 3000);
+            }
+            
+            // Also highlight the word in the word list
+            const wordElement = document.querySelector(`[data-word="${hintWord}"]`);
+            if (wordElement) {
+                wordElement.style.animation = 'pulse 1s ease-in-out 3';
+                setTimeout(() => {
+                    wordElement.style.animation = '';
+                }, 3000);
+            }
         }
+        
+        this.hintsUsed++;
+        this.updateHintDisplay();
         
         // Deduct points for hint
         this.score = Math.max(0, this.score - 5);
@@ -327,6 +362,16 @@ class WordPuzzleGame {
         document.getElementById('score').textContent = this.score;
         document.getElementById('level').textContent = this.level;
         document.getElementById('timer').textContent = this.timeLeft;
+    }
+    
+    updateHintDisplay() {
+        const remainingHints = this.maxHints - this.hintsUsed;
+        document.getElementById('hints-remaining').textContent = remainingHints;
+        
+        // Disable hint button if no hints remaining
+        const hintBtn = document.getElementById('hint-btn');
+        hintBtn.disabled = remainingHints <= 0;
+        hintBtn.textContent = remainingHints <= 0 ? 'No Hints' : 'Hint';
     }
     
     gameOver() {
